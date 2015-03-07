@@ -9,6 +9,7 @@
 #include "ofxNanoVG.h"
 
 #define NANOVG_GLES2_IMPLEMENTATION
+#define FONTSTASH_IMPLEMENTATION
 #include "nanovg.h"
 #include "nanovg_gl.h"
 
@@ -45,6 +46,10 @@ void ofxNanoVG::beginFrame(int width, int height, float devicePixelRatio)
 		return;
 	}
 
+	frameWidth = width;
+	frameHeight = height;
+	framePixRatio = devicePixelRatio;
+
 	nvgBeginFrame(ctx, width, height, devicePixelRatio);
 	bInFrame = true;
 }
@@ -56,13 +61,24 @@ void ofxNanoVG::endFrame()
 	}
 
 	nvgEndFrame(ctx);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	bInFrame = false;
 }
 
-void ofxNanoVG::drawRect(const ofRectangle &rect)
+void ofxNanoVG::flush()
 {
-	drawRect(rect.x, rect.y, rect.width, rect.height);
+	if (!bInFrame) {
+		return;
+	}
+
+	endFrame();
+	beginFrame(frameWidth, frameHeight, framePixRatio);
 }
+
+/*******************************************************************************
+ * Shapes
+ ******************************************************************************/
 
 void ofxNanoVG::drawRect(float x, float y, float w, float h)
 {
@@ -77,11 +93,6 @@ void ofxNanoVG::drawRect(float x, float y, float w, float h)
 	nvgRect(ctx, x, y, w, h);
 
 	doOFDraw();
-}
-
-void ofxNanoVG::drawRoundedRect(const ofRectangle &rect, float r)
-{
-	return drawRoundedRect(rect.x, rect.y, rect.width, rect.height, r);
 }
 
 void ofxNanoVG::drawRoundedRect(float x, float y, float w, float h, float r)
@@ -99,7 +110,37 @@ void ofxNanoVG::drawRoundedRect(float x, float y, float w, float h, float r)
 	doOFDraw();
 }
 
-void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum ofxNanoVGlineParam cap, enum ofxNanoVGlineParam join)
+void ofxNanoVG::drawEllipse(float cx, float cy, float rx, float ry)
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	applyOFStyle();
+	applyOFMatrix();
+
+	nvgBeginPath(ctx);
+	nvgEllipse(ctx, cx, cy, rx, ry);
+
+	doOFDraw();
+}
+
+void ofxNanoVG::drawCircle(float cx, float cy, float r)
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	applyOFStyle();
+	applyOFMatrix();
+
+	nvgBeginPath(ctx);
+	nvgCircle(ctx, cx, cy, r);
+
+	doOFDraw();
+}
+
+void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum LineParam cap, enum LineParam join)
 {
 	if (!bInFrame) {
 		return;
@@ -118,7 +159,7 @@ void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum ofxNanoVGl
 	nvgStroke(ctx);
 }
 
-void ofxNanoVG::drawLine(const ofPoint& p1, const ofPoint& p2, enum ofxNanoVGlineParam cap, enum ofxNanoVGlineParam join)
+void ofxNanoVG::drawLine(const ofPoint& p1, const ofPoint& p2, enum LineParam cap, enum LineParam join)
 {
 	if (!bInFrame) {
 		return;
@@ -137,7 +178,7 @@ void ofxNanoVG::drawLine(const ofPoint& p1, const ofPoint& p2, enum ofxNanoVGlin
 	nvgStroke(ctx);
 }
 
-void ofxNanoVG::drawPolyline(const ofPolyline &line, enum ofxNanoVGlineParam cap, enum ofxNanoVGlineParam join)
+void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
 {
 	if (!bInFrame) {
 		return;
@@ -158,6 +199,166 @@ void ofxNanoVG::drawPolyline(const ofPolyline &line, enum ofxNanoVGlineParam cap
 
 	nvgStroke(ctx);
 }
+
+
+/*******************************************************************************
+ * Text
+ ******************************************************************************/
+
+ofxNanoVG::Font* ofxNanoVG::addFont(const string &name, const string &filename)
+{
+	int fontId = nvgCreateFont(ctx, name.c_str(), ofToDataPath(filename).c_str());
+	if (fontId < 0) {
+		ofLogError("ofxNanoVG::addFont", "could not create font %s from file: %s", name.c_str(), filename.c_str());
+		return NULL;
+	}
+
+	Font* font = new Font();
+	font->id = fontId;
+	font->name = name;
+	font->letterSpacing = 0;
+	font->lineHeight = 1.0f;
+	fonts.push_back(font);
+
+	return font;
+}
+
+ofxNanoVG::Font* ofxNanoVG::getFont(const string &name)
+{
+	for (int i=0; i<fonts.size(); i++) {
+		if (fonts[i]->name == name) {
+			return fonts[i];
+		}
+	}
+
+	return NULL;
+}
+
+void ofxNanoVG::drawText(const string &fontName, float x, float y, const string &text, float fontSize)
+{
+	Font* font = getFont(fontName);
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::drawText", "cannot find font: %s", fontName.c_str());
+		return;
+	}
+
+	drawText(font, x, y, text, fontSize);
+}
+
+void ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
+{
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::drawText", "font == NULL");
+		return;
+	}
+
+	nvgFontFaceId(ctx, font->id);
+	nvgTextLetterSpacing(ctx, font->letterSpacing);
+	nvgFontSize(ctx, fontSize);
+
+	applyOFStyle();
+	applyOFMatrix();
+
+	nvgText(ctx, x, y, text.c_str(), NULL);
+}
+
+void ofxNanoVG::drawTextBox(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth)
+{
+	Font* font = getFont(fontName);
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::drawTextBox", "cannot find font: %s", fontName.c_str());
+		return;
+	}
+
+	drawTextBox(font, x, y, text, fontSize, breakRowWidth);
+}
+
+void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth)
+{
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::drawTextBox", "font == NULL");
+		return;
+	}
+
+	nvgFontFaceId(ctx, font->id);
+	nvgTextLetterSpacing(ctx, font->letterSpacing);
+	nvgTextLineHeight(ctx, font->lineHeight);
+	nvgFontSize(ctx, fontSize);
+
+	applyOFStyle();
+	applyOFMatrix();
+
+	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL);
+}
+
+void ofxNanoVG::setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver)
+{
+	nvgTextAlign(ctx, hor | ver);
+}
+
+ofRectangle ofxNanoVG::getTextBounds(const string &fontName, float x, float y, const string &text, float fontSize)
+{
+	Font* font = getFont(fontName);
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::getTextBounds", "cannot find font: %s", fontName.c_str());
+		return ofRectangle();
+	}
+
+	return getTextBounds(font, x, y, text, fontSize);
+}
+
+ofRectangle ofxNanoVG::getTextBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
+{
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::getTextBounds", "font == NULL");
+		return ofRectangle();
+	}
+
+	nvgFontFaceId(ctx, font->id);
+	nvgTextLetterSpacing(ctx, font->letterSpacing);
+	nvgFontSize(ctx, fontSize);
+
+	float bounds[4];
+	nvgTextBounds(ctx, x, y, text.c_str(), NULL, bounds);
+
+	return ofRectangle(bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1]);
+}
+
+ofRectangle ofxNanoVG::getTextBoxBounds(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth)
+{
+	Font* font = getFont(fontName);
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::getTextBoxBounds", "cannot find font: %s", fontName.c_str());
+		return ofRectangle();
+	}
+
+	return getTextBoxBounds(font, x, y, text, fontSize, breakRowWidth);
+}
+
+ofRectangle ofxNanoVG::getTextBoxBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth)
+{
+	if (font == NULL) {
+		ofLogError("ofxNanoVG::getTextBoxBounds", "font == NULL");
+		return ofRectangle();
+	}
+
+	nvgFontFaceId(ctx, font->id);
+	nvgTextLetterSpacing(ctx, font->letterSpacing);
+	nvgTextLineHeight(ctx, font->lineHeight);
+	nvgFontSize(ctx, fontSize);
+
+	float bounds[4];
+	nvgTextBoxBounds(ctx, x, y, breakRowWidth, text.c_str(), NULL, bounds);
+
+	return ofRectangle(bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1]);
+}
+
+
+void ofxNanoVG::setFontBlur(float blur)
+{
+	nvgFontBlur(ctx, blur);
+}
+
 
 //------------------------------------------------------------------
 // private
