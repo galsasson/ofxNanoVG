@@ -60,6 +60,10 @@ public:
 
 	void drawEllipse(float cx, float cy, float rx, float ry);
 
+	void drawCircle(const ofPoint& p, float r) {
+		drawCircle(p.x, p.y, r);
+	}
+
 	void drawCircle(float cx, float cy, float r);
 
 	void drawLine(float x1, float y1, float x2, float y2,
