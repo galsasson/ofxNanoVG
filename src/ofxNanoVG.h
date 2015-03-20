@@ -136,6 +136,10 @@ public:
 	void setFontBlur(float blur);
 
 
+
+	// copy current OF matrix to nanovg
+	void applyOFMatrix();
+
 private:
 
 	bool bInitialized;
@@ -150,9 +154,6 @@ private:
 
 	// apply OF color and stroke width
 	void applyOFStyle();
-
-	// copy current OF matrix to nanovg
-	void applyOFMatrix();
 
 	// perform stroke or fill according to the current OF style.
 	void doOFDraw();

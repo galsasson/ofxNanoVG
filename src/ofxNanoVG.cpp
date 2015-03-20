@@ -8,10 +8,15 @@
 
 #include "ofxNanoVG.h"
 
+//#define ALWAYS_APPLY_OF_MATRIX
+
+#define NVG_DISABLE_FACE_CULL_FOR_TRIANGLES
+
 #define NANOVG_GLES2_IMPLEMENTATION
 #define FONTSTASH_IMPLEMENTATION
 #include "nanovg.h"
 #include "nanovg_gl.h"
+#include "nanovg_gl_utils.h"
 
 ofxNanoVG::~ofxNanoVG()
 {
@@ -87,7 +92,9 @@ void ofxNanoVG::drawRect(float x, float y, float w, float h)
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgBeginPath(ctx);
 	nvgRect(ctx, x, y, w, h);
@@ -102,7 +109,9 @@ void ofxNanoVG::drawRoundedRect(float x, float y, float w, float h, float r)
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgBeginPath(ctx);
 	nvgRoundedRect(ctx, x, y, w, h, r);
@@ -117,7 +126,9 @@ void ofxNanoVG::drawEllipse(float cx, float cy, float rx, float ry)
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgBeginPath(ctx);
 	nvgEllipse(ctx, cx, cy, rx, ry);
@@ -132,7 +143,9 @@ void ofxNanoVG::drawCircle(float cx, float cy, float r)
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgBeginPath(ctx);
 	nvgCircle(ctx, cx, cy, r);
@@ -147,7 +160,9 @@ void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum LineParam 
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgLineCap(ctx, cap);
 	nvgLineJoin(ctx, join);
@@ -166,7 +181,9 @@ void ofxNanoVG::drawLine(const ofPoint& p1, const ofPoint& p2, enum LineParam ca
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgLineCap(ctx, cap);
 	nvgLineJoin(ctx, join);
@@ -185,7 +202,9 @@ void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum Li
 	}
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgLineCap(ctx, cap);
 	nvgLineJoin(ctx, join);
@@ -257,7 +276,9 @@ void ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &
 	nvgFontSize(ctx, fontSize);
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgText(ctx, x, y, text.c_str(), NULL);
 }
@@ -286,7 +307,9 @@ void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const strin
 	nvgFontSize(ctx, fontSize);
 
 	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
+#endif
 
 	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL);
 }
@@ -359,23 +382,6 @@ void ofxNanoVG::setFontBlur(float blur)
 	nvgFontBlur(ctx, blur);
 }
 
-
-//------------------------------------------------------------------
-// private
-//------------------------------------------------------------------
-
-
-void ofxNanoVG::applyOFStyle()
-{
-	ofStyle style = ofGetStyle();
-	ofFloatColor floatColor = style.color;
-	NVGcolor color = nvgRGBAf(floatColor.r, floatColor.g, floatColor.b, floatColor.a);
-
-	nvgFillColor(ctx, color);
-	nvgStrokeColor(ctx, color);
-	nvgStrokeWidth(ctx, style.lineWidth);
-}
-
 /******
  * applyOFMatrix
  *
@@ -400,6 +406,22 @@ void ofxNanoVG::applyOFMatrix()
 	nvgResetTransform(ctx);
 	nvgTransform(ctx, scale.x, -skew.y, -skew.x,
 				 scale.y, translate.x, translate.y);
+}
+
+//------------------------------------------------------------------
+// private
+//------------------------------------------------------------------
+
+
+void ofxNanoVG::applyOFStyle()
+{
+	ofStyle style = ofGetStyle();
+	ofFloatColor floatColor = style.color;
+	NVGcolor color = nvgRGBAf(floatColor.r, floatColor.g, floatColor.b, floatColor.a);
+
+	nvgFillColor(ctx, color);
+	nvgStrokeColor(ctx, color);
+	nvgStrokeWidth(ctx, style.lineWidth);
 }
 
 void ofxNanoVG::doOFDraw()
