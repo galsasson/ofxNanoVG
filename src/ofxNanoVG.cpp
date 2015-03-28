@@ -211,12 +211,103 @@ void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum Li
 
 	const vector<ofPoint>& verts = line.getVertices();
 	nvgBeginPath(ctx);
-	nvgMoveTo(ctx, verts[0].x, verts[1].y);
-	for (ofPoint p : verts) {
-		nvgLineTo(ctx, p.x, p.y);
+	nvgMoveTo(ctx, verts[0].x, verts[0].y);
+	for (int i=1; i<verts.size(); i++) {
+		nvgLineTo(ctx, verts[i].x, verts[i].y);
 	}
 
 	nvgStroke(ctx);
+}
+
+void ofxNanoVG::fillPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
+	applyOFMatrix();
+#endif
+
+	nvgLineCap(ctx, cap);
+	nvgLineJoin(ctx, join);
+
+	const vector<ofPoint>& verts = line.getVertices();
+	nvgBeginPath(ctx);
+	nvgMoveTo(ctx, verts[0].x, verts[0].y);
+	for (int i=1; i<verts.size(); i++) {
+		nvgLineTo(ctx, verts[i].x, verts[i].y);
+	}
+
+	nvgFill(ctx);
+}
+
+void ofxNanoVG::beginShape()
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	if (bInShape) {
+		ofLogError("ofxNanoVG") << "call to beginShape while already inside shape drawing"<<endl;
+		return;
+	}
+
+	bInShape = true;
+	vertexCount = 0;
+
+	nvgBeginPath(ctx);
+}
+
+void ofxNanoVG::endShape()
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
+		return;
+	}
+
+	applyOFStyle();
+	doOFDraw();
+
+	bInShape = false;
+}
+
+void ofxNanoVG::vertex(float x, float y)
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to vertex(x,y) without beginShape"<<endl;
+		return;
+	}
+
+	if (vertexCount==0) {
+		nvgMoveTo(ctx, x, y);
+	}
+	else {
+		nvgLineTo(ctx, x, y);
+	}
+
+	vertexCount++;
+}
+
+void ofxNanoVG::bezierVertex(float cx1, float cy1, float cx2, float cy2, float x, float y)
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to bezierVertex(x,y) without beginShape"<<endl;
+		return;
+	}
+
+	if (vertexCount==0) {
+		nvgMoveTo(ctx, 0, 0);
+	}
+
+	nvgBezierTo(ctx, cx1, cy1, cx2, cy2, x, y);
+
+	vertexCount++;
 }
 
 

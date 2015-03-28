@@ -75,6 +75,25 @@ public:
 	void drawPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 
+	void fillPolyline(const ofPolyline& line,
+					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
+
+	void beginShape();
+
+	void endShape();
+
+	void vertex(const ofVec2f& p) {
+		vertex(p.x, p.y);
+	}
+
+	void vertex(float x, float y);
+
+	void bezierVertex(const ofVec2f& cp1, const ofVec2f& cp2, const ofVec2f& p) {
+		bezierVertex(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y);
+	}
+
+	void bezierVertex(float cx1, float cy1, float cx2, float cy2, float x, float y);
+
 
 	/******
 	 * Text
@@ -147,6 +166,11 @@ private:
 	int frameWidth, frameHeight;
 	float framePixRatio;
 
+	// for shapes
+	bool bInShape;
+	int vertexCount;
+
+
 	NVGcontext* ctx;
 
 	// fonts
@@ -161,6 +185,7 @@ private:
 	ofxNanoVG() :
 		bInitialized(false),
 		bInFrame(false),
+		bInShape(false),
 		ctx(NULL) {}
 
 	// make sure there are no copies
