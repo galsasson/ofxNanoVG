@@ -71,6 +71,30 @@ void ofxNanoVG::endFrame()
 	bInFrame = false;
 }
 
+void ofxNanoVG::pushFrame()
+{
+	Settings set;
+	set.width = frameWidth;
+	set.height = frameHeight;
+	set.devicePixelRatio = framePixRatio;
+	framesStack.push(set);
+
+	endFrame();
+}
+
+void ofxNanoVG::popFrame()
+{
+	if (framesStack.empty()) {
+		ofLogNotice("ofxNanoVG") << "trying to pop empty frame stack";
+		return;
+	}
+	
+	Settings set = framesStack.top();
+	framesStack.pop();
+
+	beginFrame(set.width, set.height, set.devicePixelRatio);
+}
+
 void ofxNanoVG::flush()
 {
 	if (!bInFrame) {

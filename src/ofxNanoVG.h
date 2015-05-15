@@ -28,9 +28,18 @@ public:
 
 	void setup(bool debug=false);
 
+	struct Settings {
+		int width;
+		int height;
+		float devicePixelRatio;
+	};
+
 	void beginFrame(int width, int height, float devicePixelRatio);
 	void endFrame();
 	void flush();
+	void pushFrame();
+	void popFrame();
+	std::stack<Settings> framesStack;
 
 	/******
 	 * Shapes
