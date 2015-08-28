@@ -12,7 +12,6 @@
 
 #define NVG_DISABLE_FACE_CULL_FOR_TRIANGLES
 
-#define NANOVG_GLES2_IMPLEMENTATION
 #define FONTSTASH_IMPLEMENTATION
 #include "nanovg.h"
 #include "nanovg_gl.h"
@@ -26,7 +25,11 @@ ofxNanoVG::~ofxNanoVG()
 		return;
 	}
 
+#ifdef NANOVG_GL3_IMPLEMENTATION
+	nvgDeleteGL3(ctx);
+#elif defined NANOVG_GLES2_IMPLEMENTATION
 	nvgDeleteGLES2(ctx);
+#endif
 }
 
 void ofxNanoVG::setup(bool debug)
@@ -35,7 +38,11 @@ void ofxNanoVG::setup(bool debug)
 		return;
 	}
 
+#ifdef NANOVG_GL3_IMPLEMENTATION
+	ctx = nvgCreateGL3(NVG_ANTIALIAS | (debug?NVG_DEBUG:0));
+#elif defined NANOVG_GLES2_IMPLEMENTATION
 	ctx = nvgCreateGLES2(NVG_ANTIALIAS | (debug?NVG_DEBUG:0));
+#endif
 
 	if (!ctx) {
 		ofLogError("error creating nanovg context");
