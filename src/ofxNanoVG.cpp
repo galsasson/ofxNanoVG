@@ -57,6 +57,11 @@ void ofxNanoVG::beginFrame(int width, int height, float devicePixelRatio)
 	if (!bInitialized) {
 		return;
 	}
+	
+	if (bInFrame) {
+		ofLogError("ofxNanoVG") << "beginFrame was called while in a frame";
+		return;
+	}
 
 	frameWidth = width;
 	frameHeight = height;
@@ -80,6 +85,11 @@ void ofxNanoVG::endFrame()
 
 void ofxNanoVG::pushFrame()
 {
+	if (!bInFrame) {
+		ofLogError("ofxNanoVG") << "pushFrame was called outside of a frame";
+		return;
+	}
+	
 	Settings set;
 	set.width = frameWidth;
 	set.height = frameHeight;
