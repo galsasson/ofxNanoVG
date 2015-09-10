@@ -32,16 +32,16 @@ ofxNanoVG::~ofxNanoVG()
 #endif
 }
 
-void ofxNanoVG::setup(bool debug)
+void ofxNanoVG::setup(bool stencilStrokes, bool debug)
 {
 	if (bInitialized) {
 		return;
 	}
 
 #ifdef NANOVG_GL3_IMPLEMENTATION
-	ctx = nvgCreateGL3(NVG_ANTIALIAS | (debug?NVG_DEBUG:0));
+	ctx = nvgCreateGL3(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #elif defined NANOVG_GLES2_IMPLEMENTATION
-	ctx = nvgCreateGLES2(NVG_ANTIALIAS | (debug?NVG_DEBUG:0));
+	ctx = nvgCreateGLES2(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #endif
 
 	if (!ctx) {

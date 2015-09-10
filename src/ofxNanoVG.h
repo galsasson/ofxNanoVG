@@ -26,7 +26,7 @@ public:
 		return instance;
 	}
 
-	void setup(bool debug=false);
+	void setup(bool stencilStrokes=false, bool debug=false);
 
 	struct Settings {
 		int width;
