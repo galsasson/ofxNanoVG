@@ -81,6 +81,10 @@ void ofxNanoVG::endFrame()
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	bInFrame = false;
+	
+#ifdef ADD_OF_PATCH_FOR_NANOVG
+	ofGetCurrentRenderer()->setCurrentShaderDirty();
+#endif
 }
 
 void ofxNanoVG::pushFrame()
