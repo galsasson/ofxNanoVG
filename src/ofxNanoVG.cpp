@@ -246,6 +246,10 @@ void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum Li
 		return;
 	}
 
+	if (line.size() == 0) {
+		return;
+	}
+
 	applyOFStyle();
 #ifdef ALWAYS_APPLY_OF_MATRIX
 	applyOFMatrix();
@@ -267,6 +271,10 @@ void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum Li
 void ofxNanoVG::fillPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
 {
 	if (!bInFrame) {
+		return;
+	}
+
+	if (line.size() == 0) {
 		return;
 	}
 
