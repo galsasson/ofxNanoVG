@@ -17,7 +17,7 @@
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"
 
-#if !defined(NANVG_GL3_IMPLEMENTATION) && !defined(NANOVG_GLES2_IMPLEMENTATION)
+#if !defined(NANOVG_GL3_IMPLEMENTATION) && !defined(NANOVG_GLES2_IMPLEMENTATION)
 #error "ofxNanoVG: Please add one of the following definitions to your project NANOVG_GL3_IMPLEMENTATION, NANOVG_GLES2_IMPLEMENTATION"
 #endif
 
