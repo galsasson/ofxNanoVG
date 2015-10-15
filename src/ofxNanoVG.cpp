@@ -534,6 +534,10 @@ void ofxNanoVG::setFontBlur(float blur)
  */
 void ofxNanoVG::applyOFMatrix()
 {
+	if (!bInitialized) {
+		return;
+	}
+
 	ofMatrix4x4 ofMatrix = ofGetCurrentMatrix(OF_MATRIX_MODELVIEW);
 	ofVec2f viewSize = ofVec2f(ofGetViewportWidth(), ofGetViewportHeight());
 
