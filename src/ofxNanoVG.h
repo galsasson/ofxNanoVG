@@ -75,11 +75,13 @@ public:
 
 	void drawCircle(float cx, float cy, float r);
 
+	void drawLine(const ofPoint& p1, const ofPoint& p2,
+				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER) {
+		drawLine(p1.x, p1.y, p2.x, p2.y, cap, join);
+	}
 	void drawLine(float x1, float y1, float x2, float y2,
 				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 
-	void drawLine(const ofPoint& p1, const ofPoint& p2,
-				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 
 	void drawPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
@@ -88,21 +90,26 @@ public:
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 
 	void beginShape();
-
 	void endShape();
-
+	void endShapeStroke();
+	void endShapeFill();
+	void moveTo(const ofVec2f& p) {
+		moveTo(p.x, p.y);
+	}
+	void moveTo(float x, float y);
+	void lineTo(const ofVec2f& p) {
+		lineTo(p.x, p.y);
+	}
+	void lineTo(float x, float y);
 	void vertex(const ofVec2f& p) {
 		vertex(p.x, p.y);
 	}
-
 	void vertex(float x, float y);
-
 	void bezierVertex(const ofVec2f& cp1, const ofVec2f& cp2, const ofVec2f& p) {
 		bezierVertex(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y);
 	}
-
 	void bezierVertex(float cx1, float cy1, float cx2, float cy2, float x, float y);
-
+	
 
 	/******
 	 * Text

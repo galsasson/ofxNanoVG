@@ -23,8 +23,6 @@
 
 ofxNanoVG::~ofxNanoVG()
 {
-	ofLogWarning("ofxNanoVG","In destructor");
-
 	if (!bInitialized) {
 		return;
 	}
@@ -52,6 +50,10 @@ void ofxNanoVG::setup(bool stencilStrokes, bool debug)
 		ofLogError("error creating nanovg context");
 		return;
 	}
+
+	// set defaults
+	nvgLineCap(ctx, NVG_BUTT);
+	nvgLineJoin(ctx, NVG_MITER);
 
 	bInitialized = true;
 }
@@ -223,27 +225,6 @@ void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum LineParam 
 	nvgStroke(ctx);
 }
 
-void ofxNanoVG::drawLine(const ofPoint& p1, const ofPoint& p2, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-
-	nvgBeginPath(ctx);
-	nvgMoveTo(ctx, p1.x, p1.y);
-	nvgLineTo(ctx, p2.x, p2.y);
-
-	nvgStroke(ctx);
-}
-
 void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
 {
 	if (!bInFrame) {
@@ -315,23 +296,62 @@ void ofxNanoVG::beginShape()
 	vertexCount = 0;
 
 	nvgBeginPath(ctx);
+	applyOFStyle();
 }
 
 void ofxNanoVG::endShape()
 {
-	if (!bInFrame) {
-		return;
-	}
-
 	if (!bInShape) {
 		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
 		return;
 	}
 
-	applyOFStyle();
 	doOFDraw();
-
 	bInShape = false;
+}
+
+void ofxNanoVG::endShapeStroke()
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
+		return;
+	}
+	
+	nvgStroke(ctx);
+	bInShape = false;
+}
+
+void ofxNanoVG::endShapeFill()
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
+		return;
+	}
+	
+	nvgFill(ctx);
+	bInShape = false;
+}
+
+void ofxNanoVG::moveTo(float x, float y)
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to moveTo without previous call to beginShape"<<endl;
+		return;
+	}
+	
+	nvgMoveTo(ctx, x, y);
+	vertexCount++;
+}
+
+void ofxNanoVG::lineTo(float x, float y)
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to lineTo without previous call to beginShape"<<endl;
+		return;
+	}
+	
+	nvgLineTo(ctx, x, y);
+	vertexCount++;
 }
 
 void ofxNanoVG::vertex(float x, float y)
