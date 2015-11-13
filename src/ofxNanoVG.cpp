@@ -281,6 +281,39 @@ void ofxNanoVG::fillPolyline(const ofPolyline &line, enum LineParam cap, enum Li
 	nvgFill(ctx);
 }
 
+void ofxNanoVG::drawPath(const ofPath& path, enum LineParam cap, enum LineParam join)
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
+	applyOFMatrix();
+#endif
+
+	nvgLineCap(ctx, cap);
+	nvgLineJoin(ctx, join);
+	nvgBeginPath(ctx);
+	for (const ofPath::Command& c : path.getCommands()) {
+		switch (c.type) {
+			case ofPath::Command::moveTo:
+				nvgMoveTo(ctx, c.to.x, c.to.y);
+				break;
+			case ofPath::Command::lineTo:
+				nvgLineTo(ctx, c.to.x, c.to.y);
+				break;
+			case ofPath::Command::bezierTo:
+				nvgBezierTo(ctx, c.cp1.x, c.cp1.y, c.cp2.x, c.cp2.y, c.to.x, c.to.y);
+				break;
+			default:
+				break;
+		}
+
+	}
+	nvgStroke(ctx);
+}
+
 void ofxNanoVG::beginShape()
 {
 	if (!bInFrame) {

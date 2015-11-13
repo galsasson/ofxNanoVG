@@ -56,39 +56,29 @@ public:
 	// lineJoin: one of: NVG_MITER (default), NVG_ROUND, NVG_BEVEL
 
 	void drawRect(float x, float y, float w, float h);
-
 	void drawRect(const ofRectangle& rect) {
 		drawRect(rect.x, rect.y, rect.width, rect.height);
 	}
-
 	void drawRoundedRect(float x, float y, float w, float h, float r);
-
 	void drawRoundedRect(const ofRectangle& rect, float r) {
 		drawRoundedRect(rect.x, rect.y, rect.width, rect.height, r);
 	}
-
 	void drawEllipse(float cx, float cy, float rx, float ry);
-
 	void drawCircle(const ofPoint& p, float r) {
 		drawCircle(p.x, p.y, r);
 	}
-
 	void drawCircle(float cx, float cy, float r);
-
 	void drawLine(const ofPoint& p1, const ofPoint& p2,
 				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER) {
 		drawLine(p1.x, p1.y, p2.x, p2.y, cap, join);
 	}
 	void drawLine(float x1, float y1, float x2, float y2,
 				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-
-
 	void drawPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-
 	void fillPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-
+	void drawPath(const ofPath& path, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 	void beginShape();
 	void endShape();
 	void endShapeStroke();
