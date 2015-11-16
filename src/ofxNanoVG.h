@@ -156,7 +156,7 @@ public:
 	 */
 	
 	NSVGimage* parseSvgFile(const string& filename, const string& units, float dpi);
-	void drawSvg(NSVGimage* svg);
+	void drawSvg(NSVGimage* svg, float x=0, float y=0);
 	void freeSvg(NSVGimage* svg);
 	
 	// copy current OF matrix to nanovg

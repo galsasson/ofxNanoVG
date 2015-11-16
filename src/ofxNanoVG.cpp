@@ -596,10 +596,14 @@ NSVGimage* ofxNanoVG::parseSvgFile(const string& filename, const string& units, 
 	return nsvgParseFromFile(ofToDataPath(filename).c_str(), units.c_str(), dpi);
 }
 
-void ofxNanoVG::drawSvg(NSVGimage* svg)
+void ofxNanoVG::drawSvg(NSVGimage* svg, float x, float y)
 {
 	if (svg == NULL) {
 		return;
+	}
+
+	if (x!=0 || y!=0) {
+		nvgTranslate(ctx, x, y);
 	}
 
 	NSVGshape* shape = svg->shapes;
@@ -614,6 +618,10 @@ void ofxNanoVG::drawSvg(NSVGimage* svg)
 			path = path->next;		// next path
 		}
 		shape = shape->next; 		// next shape
+	}
+
+	if (x!=0 || y!=0) {
+		nvgTranslate(ctx, -x, -y);
 	}
 }
 
