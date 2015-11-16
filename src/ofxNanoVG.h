@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "nanosvg.h"
 
 class NVGcontext;
 
@@ -129,39 +130,35 @@ public:
 
 	// returns font id that can be used later
 	Font* addFont(const string& name, const string& filename);
-
 	Font* getFont(const string& name);
-
 	void drawText(const string& fontName, float x, float y,
 				  const string& text, float fontSize);
-
 	void drawText(Font* font, float x, float y,
 				  const string& text, float fontSize);
-
 	void drawTextBox(const string& fontName, float x, float y,
 					 const string& text, float fontSize, float breakRowWidth);
-
 	void drawTextBox(Font* font, float x, float y,
 					 const string& text, float fontSize, float breakRowWidth);
-
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
-
 	ofRectangle getTextBounds(const string& fontName, float x, float y,
 							  const string& text, float fontSize);
-
 	ofRectangle getTextBounds(Font* font, float x, float y,
 							  const string& text, float fontSize);
-
 	ofRectangle getTextBoxBounds(const string& fontName, float x, float y,
 								 const string& text, float fontSize, float breakRowWidth);
-
 	ofRectangle getTextBoxBounds(Font* font, float x, float y,
 								 const string& text, float fontSize, float breakRowWidth);
-
 	void setFontBlur(float blur);
 
-
-
+	
+	/******
+	 * SVG
+	 */
+	
+	NSVGimage* parseSvgFile(const string& filename, const string& units, float dpi);
+	void drawSvg(NSVGimage* svg);
+	void freeSvg(NSVGimage* svg);
+	
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
 

@@ -21,6 +21,9 @@
 #error "ofxNanoVG: Please add one of the following definitions to your project NANOVG_GL3_IMPLEMENTATION, NANOVG_GLES2_IMPLEMENTATION"
 #endif
 
+#define NANOSVG_IMPLEMENTATION
+#include "nanosvg.h"
+
 ofxNanoVG::~ofxNanoVG()
 {
 	if (!bInitialized) {
@@ -581,6 +584,42 @@ ofRectangle ofxNanoVG::getTextBoxBounds(ofxNanoVG::Font *font, float x, float y,
 void ofxNanoVG::setFontBlur(float blur)
 {
 	nvgFontBlur(ctx, blur);
+}
+
+
+/*******************************************************************************
+ * SVG
+ ******************************************************************************/
+
+NSVGimage* ofxNanoVG::parseSvgFile(const string& filename, const string& units, float dpi)
+{
+	return nsvgParseFromFile(ofToDataPath(filename).c_str(), units.c_str(), dpi);
+}
+
+void ofxNanoVG::drawSvg(NSVGimage* svg)
+{
+	if (svg == NULL) {
+		return;
+	}
+
+	NSVGshape* shape = svg->shapes;
+	while (shape != NULL) {
+		NSVGpath* path = shape->paths;
+		while (path != NULL) {
+			beginShape();
+			for (int i=0; i<path->npts; i++) {
+				vertex(path->pts[i*2], path->pts[i*2+1]);
+			}
+			endShape();
+			path = path->next;		// next path
+		}
+		shape = shape->next; 		// next shape
+	}
+}
+
+void ofxNanoVG::freeSvg(NSVGimage* svg)
+{
+	nsvgDelete(svg);
 }
 
 /******

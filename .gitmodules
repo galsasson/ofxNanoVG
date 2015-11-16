@@ -1,3 +1,6 @@
 [submodule "libs/nanovg"]
 	path = libs/nanovg
 	url = git@github.com:galsasson/nanovg.git
+[submodule "libs/nanosvg"]
+	path = libs/nanosvg
+	url = git@github.com:galsasson/nanosvg.git
