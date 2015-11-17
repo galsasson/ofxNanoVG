@@ -79,7 +79,7 @@ public:
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 	void fillPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void drawPath(const ofPath& path, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
+	void drawPath(const ofPath& path, float x=0, float y=0, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 	void beginShape();
 	void endShape();
 	void endShapeStroke();
@@ -161,6 +161,7 @@ public:
 	
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
+	void resetMatrix();
 
 private:
 
