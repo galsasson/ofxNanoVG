@@ -340,7 +340,6 @@ void ofxNanoVG::beginShape()
 	vertexCount = 0;
 
 	nvgBeginPath(ctx);
-	applyOFStyle();
 }
 
 void ofxNanoVG::endShape()
@@ -382,7 +381,7 @@ void ofxNanoVG::moveTo(float x, float y)
 		ofLogError("ofxNanoVG") << "call to moveTo without previous call to beginShape"<<endl;
 		return;
 	}
-	
+
 	nvgMoveTo(ctx, x, y);
 	vertexCount++;
 }
@@ -393,9 +392,19 @@ void ofxNanoVG::lineTo(float x, float y)
 		ofLogError("ofxNanoVG") << "call to lineTo without previous call to beginShape"<<endl;
 		return;
 	}
-	
+
 	nvgLineTo(ctx, x, y);
 	vertexCount++;
+}
+
+void ofxNanoVG::bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y)
+{
+	if (!bInShape) {
+		ofLogError("ofxNanoVG") << "call to lineTo without previous call to beginShape"<<endl;
+		return;
+	}
+
+	nvgBezierTo(ctx, cx1, cy1, cx2, cy2, x, y);
 }
 
 void ofxNanoVG::vertex(float x, float y)
@@ -639,6 +648,56 @@ void ofxNanoVG::freeSvg(NSVGimage* svg)
 }
 
 /******
+ * Paint
+ */
+
+void ofxNanoVG::setFillColor(const ofFloatColor &c)
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgFillColor(ctx, toNVGcolor(c));
+}
+
+void ofxNanoVG::setFillPaint(const NVGpaint &paint)
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgFillPaint(ctx, paint);
+}
+
+void ofxNanoVG::setStrokeColor(const ofFloatColor &c)
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgStrokeColor(ctx, toNVGcolor(c));
+}
+
+void ofxNanoVG::setStrokePaint(const NVGpaint &paint)
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgStrokePaint(ctx, paint);
+}
+
+NVGpaint ofxNanoVG::getLinearGradient(float sx, float sy, float ex, float ey, const ofColor &c1, const ofColor &c2)
+{
+	return nvgLinearGradient(ctx, sx, sy, ex, ey, toNVGcolor(c1), toNVGcolor(c2));
+}
+
+NVGcolor ofxNanoVG::toNVGcolor(const ofFloatColor& c)
+{
+	return nvgRGBAf(c.r, c.g, c.b, c.a);
+}
+
+/******
  * applyOFMatrix
  *
  * Take OF model-view matrix and apply the affine transformations
@@ -685,8 +744,7 @@ void ofxNanoVG::resetMatrix()
 void ofxNanoVG::applyOFStyle()
 {
 	ofStyle style = ofGetStyle();
-	ofFloatColor floatColor = style.color;
-	NVGcolor color = nvgRGBAf(floatColor.r, floatColor.g, floatColor.b, floatColor.a);
+	NVGcolor color = toNVGcolor(style.color);
 
 	nvgFillColor(ctx, color);
 	nvgStrokeColor(ctx, color);

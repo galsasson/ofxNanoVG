@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "ofMain.h"
 #include "nanosvg.h"
+#include "nanovg.h"
 
 class NVGcontext;
 
@@ -92,6 +93,7 @@ public:
 		lineTo(p.x, p.y);
 	}
 	void lineTo(float x, float y);
+	void bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y);
 	void vertex(const ofVec2f& p) {
 		vertex(p.x, p.y);
 	}
@@ -159,9 +161,21 @@ public:
 	void drawSvg(NSVGimage* svg, float x=0, float y=0);
 	void freeSvg(NSVGimage* svg);
 	
+	/******
+	 * Paints
+	 */
+	void setFillColor(const ofFloatColor& c);
+	void setFillPaint(const NVGpaint& paint);
+	void setStrokeColor(const ofFloatColor& c);
+	void setStrokePaint(const NVGpaint& paint);
+	NVGpaint getLinearGradient(float sx, float sy, float ex, float ey, const ofColor& c1, const ofColor& c2);
+	static inline NVGcolor toNVGcolor(const ofFloatColor& c);
+
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
 	void resetMatrix();
+	// apply OF color and stroke width
+	void applyOFStyle();
 
 private:
 
@@ -179,9 +193,6 @@ private:
 
 	// fonts
 	vector<ofxNanoVG::Font*> fonts;
-
-	// apply OF color and stroke width
-	void applyOFStyle();
 
 	// perform stroke or fill according to the current OF style.
 	void doOFDraw();
