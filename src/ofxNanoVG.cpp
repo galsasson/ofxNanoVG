@@ -759,14 +759,13 @@ void ofxNanoVG::applyOFMatrix()
 	// handle OF style vFlipped inside FBO
 	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()(1, 1) == 1) {
 		translate.y = ofGetViewportHeight() - translate.y;
+		scale.y *= -1;
+		skew.y *= -1;
 	}
 
 	nvgResetTransform(ctx);
 	nvgTransform(ctx, scale.x, -skew.y, -skew.x,
 				 scale.y, translate.x, translate.y);
-	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()(1, 1) == 1) {
-		nvgScale(ctx, 1, -1);
-	}
 }
 
 void ofxNanoVG::resetMatrix()
