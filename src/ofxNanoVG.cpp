@@ -325,6 +325,46 @@ void ofxNanoVG::drawPath(const ofPath& path, float x, float y, enum LineParam ca
 	}
 }
 
+void ofxNanoVG::fillPath(const ofPath& path, float x, float y, enum LineParam cap, enum LineParam join)
+{
+	if (!bInFrame) {
+		return;
+	}
+
+	if (x!=0 || y!=0) {
+		nvgTranslate(ctx, x, y);
+	}
+
+	applyOFStyle();
+#ifdef ALWAYS_APPLY_OF_MATRIX
+	applyOFMatrix();
+#endif
+
+	nvgLineCap(ctx, cap);
+	nvgLineJoin(ctx, join);
+	nvgBeginPath(ctx);
+	for (const ofPath::Command& c : path.getCommands()) {
+		switch (c.type) {
+			case ofPath::Command::moveTo:
+				nvgMoveTo(ctx, c.to.x, c.to.y);
+				break;
+			case ofPath::Command::lineTo:
+				nvgLineTo(ctx, c.to.x, c.to.y);
+				break;
+			case ofPath::Command::bezierTo:
+				nvgBezierTo(ctx, c.cp1.x, c.cp1.y, c.cp2.x, c.cp2.y, c.to.x, c.to.y);
+				break;
+			default:
+				break;
+		}
+	}
+	nvgFill(ctx);
+
+	if (x!=0 || y!=0) {
+		nvgTranslate(ctx, -x, -y);
+	}
+}
+
 void ofxNanoVG::beginShape()
 {
 	if (!bInFrame) {
@@ -719,12 +759,14 @@ void ofxNanoVG::applyOFMatrix()
 	// handle OF style vFlipped inside FBO
 	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()(1, 1) == 1) {
 		translate.y = ofGetViewportHeight() - translate.y;
-		scale.y *= -1;
 	}
 
 	nvgResetTransform(ctx);
 	nvgTransform(ctx, scale.x, -skew.y, -skew.x,
 				 scale.y, translate.x, translate.y);
+	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()(1, 1) == 1) {
+		nvgScale(ctx, 1, -1);
+	}
 }
 
 void ofxNanoVG::resetMatrix()

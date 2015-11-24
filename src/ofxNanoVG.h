@@ -81,6 +81,7 @@ public:
 	void fillPolyline(const ofPolyline& line,
 					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 	void drawPath(const ofPath& path, float x=0, float y=0, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
+	void fillPath(const ofPath& path, float x=0, float y=0, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
 	void beginShape();
 	void endShape();
 	void endShapeStroke();
