@@ -139,44 +139,6 @@ void ofxNanoVG::flush()
  * Shapes
  ******************************************************************************/
 
-void ofxNanoVG::beginPath() {
-	nvgBeginPath(ctx);
-}
-
-void ofxNanoVG::strokePath() {
-	nvgStroke(ctx);
-}
-
-void ofxNanoVG::fillPath() {
-	nvgFill(ctx);
-}
-
-void ofxNanoVG::rect(const ofRectangle& r) { rect(r.x, r.y, r.width, r.height); }
-void ofxNanoVG::rect(float x, float y, float w, float h) {
-	nvgRect(ctx, x, y, w, h);
-}
-
-void ofxNanoVG::roundedRect(const ofRectangle &r, float ang) { roundedRect(r.x, r.y, r.width, r.height, ang); }
-void ofxNanoVG::roundedRect(float x, float y, float w, float h, float r) {
-	nvgRoundedRect(ctx, x, y, w, h, r);
-}
-
-void ofxNanoVG::ellipse(const ofVec2f& p, float rx, float ry) { ellipse(p.x, p.y, rx, ry); }
-void ofxNanoVG::ellipse(float cx, float cy, float rx, float ry) {
-	nvgEllipse(ctx, cx, cy, rx, ry);
-}
-
-void ofxNanoVG::circle(const ofVec2f& p, float r) { circle(p.x, p.y, r); }
-void ofxNanoVG::circle(float cx, float cy, float r) {
-	nvgCircle(ctx, cx, cy, r);
-}
-
-void ofxNanoVG::line(const ofVec2f& p1, const ofVec2f& p2) { line(p1.x, p1.y, p2.x, p2.y); }
-void ofxNanoVG::line(float x1, float y1, float x2, float y2) {
-	nvgMoveTo(ctx, x1, y1);
-	nvgLineTo(ctx, x2, y2);
-}
-
 void ofxNanoVG::followPolyline(const ofPolyline &line) {
 	if (line.size() == 0) {
 		return;
@@ -216,57 +178,96 @@ void ofxNanoVG::followPath(const ofPath& path, float x, float y) {
 	}
 }
 
-void ofxNanoVG::moveTo(const ofVec2f& p) { moveTo(p.x, p.y); }
-void ofxNanoVG::moveTo(float x, float y) {
-	nvgMoveTo(ctx, x, y);
+/******
+ * For convenience
+ */
+
+void ofxNanoVG::strokeRect(float x, float y, float w, float h, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	rect(x, y, w, h);
+	strokePath();
 }
 
-void ofxNanoVG::lineTo(const ofVec2f& p) { lineTo(p.x, p.y); }
-void ofxNanoVG::lineTo(float x, float y) {
-	nvgLineTo(ctx, x, y);
+void ofxNanoVG::fillRect(float x, float y, float w, float h, const ofColor& c) {
+	beginPath();
+	setFillColor(c);
+	rect(x, y, w, h);
+	fillPath();
 }
 
-void ofxNanoVG::bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
-	nvgBezierTo(ctx, cx1, cy1, cx2, cy2, x, y);
+void ofxNanoVG::strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	roundedRect(x, y, w, h, r);
+	strokePath();
 }
 
+void ofxNanoVG::fillRoundedRect(float x, float y, float w, float h, float r, const ofColor& c) {
+	beginPath();
+	setFillColor(c);
+	roundedRect(x, y, w, h, r);
+	fillPath();
+}
+
+void ofxNanoVG::strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	ellipse(cx, cy, rx, ry);
+	strokePath();
+}
+
+void ofxNanoVG::fillEllipse(float cx, float cy, float rx, float ry, const ofColor& c) {
+	beginPath();
+	setFillColor(c);
+	ellipse(cx, cy, rx, ry);
+	fillPath();
+}
+
+void ofxNanoVG::strokeCircle(float cx, float cy, float r, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	circle(cx, cy, r);
+	strokePath();
+}
+
+void ofxNanoVG::fillCircle(float cx, float cy, float r, const ofColor& c) {
+	beginPath();
+	setFillColor(c);
+	circle(cx, cy, r);
+	fillPath();
+}
+
+void ofxNanoVG::strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	line(x1, y1, x2, y2);
+	strokePath();
+}
+
+void ofxNanoVG::strokePolyline(const ofPolyline &line, const ofColor &c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	followPolyline(line);
+	strokePath();
+}
+
+void ofxNanoVG::fillPolyline(const ofPolyline &line, const ofColor &c) {
+	beginPath();
+	setFillColor(c);
+	followPolyline(line);
+	fillPath();
+}
 
 /******
  * Style
  */
-void ofxNanoVG::setStrokeWidth(float width) {
-	nvgStrokeWidth(ctx, width);
-}
-
-void ofxNanoVG::setLineCap(enum LineParam cap) {
-	nvgLineCap(ctx, cap);
-}
-
-void ofxNanoVG::setLineJoin(enum LineParam join) {
-	nvgLineJoin(ctx, join);
-}
-
-void ofxNanoVG::setFillColor(const ofFloatColor &c) {
-	nvgFillColor(ctx, toNVGcolor(c));
-}
-
-void ofxNanoVG::setFillPaint(const NVGpaint &paint) {
-	nvgFillPaint(ctx, paint);
-}
-
-void ofxNanoVG::setStrokeColor(const ofFloatColor &c) {
-	nvgStrokeColor(ctx, toNVGcolor(c));
-}
-
-void ofxNanoVG::setStrokePaint(const NVGpaint &paint)
-{
-	nvgStrokePaint(ctx, paint);
-}
-
-NVGpaint ofxNanoVG::getLinearGradientPaint(float sx, float sy, float ex, float ey, const ofColor &c1, const ofColor &c2)
-{
-	return nvgLinearGradient(ctx, sx, sy, ex, ey, toNVGcolor(c1), toNVGcolor(c2));
-}
 
 NVGpaint ofxNanoVG::getTexturePaint(const ofTexture& tex)
 {
@@ -481,11 +482,6 @@ void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y)
 void ofxNanoVG::freeSvg(NSVGimage* svg)
 {
 	nsvgDelete(svg);
-}
-
-NVGcolor ofxNanoVG::toNVGcolor(const ofFloatColor& c)
-{
-	return nvgRGBAf(c.r, c.g, c.b, c.a);
 }
 
 /******
