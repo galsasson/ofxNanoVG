@@ -139,169 +139,61 @@ void ofxNanoVG::flush()
  * Shapes
  ******************************************************************************/
 
-void ofxNanoVG::drawRect(float x, float y, float w, float h)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
+void ofxNanoVG::beginPath() {
 	nvgBeginPath(ctx);
+}
+
+void ofxNanoVG::strokePath() {
+	nvgStroke(ctx);
+}
+
+void ofxNanoVG::fillPath() {
+	nvgFill(ctx);
+}
+
+void ofxNanoVG::rect(const ofRectangle& r) { rect(r.x, r.y, r.width, r.height); }
+void ofxNanoVG::rect(float x, float y, float w, float h) {
 	nvgRect(ctx, x, y, w, h);
-
-	doOFDraw();
 }
 
-void ofxNanoVG::drawRoundedRect(float x, float y, float w, float h, float r)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgBeginPath(ctx);
+void ofxNanoVG::roundedRect(const ofRectangle &r, float ang) { roundedRect(r.x, r.y, r.width, r.height, ang); }
+void ofxNanoVG::roundedRect(float x, float y, float w, float h, float r) {
 	nvgRoundedRect(ctx, x, y, w, h, r);
-
-	doOFDraw();
 }
 
-void ofxNanoVG::drawEllipse(float cx, float cy, float rx, float ry)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgBeginPath(ctx);
+void ofxNanoVG::ellipse(const ofVec2f& p, float rx, float ry) { ellipse(p.x, p.y, rx, ry); }
+void ofxNanoVG::ellipse(float cx, float cy, float rx, float ry) {
 	nvgEllipse(ctx, cx, cy, rx, ry);
-
-	doOFDraw();
 }
 
-void ofxNanoVG::drawCircle(float cx, float cy, float r)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgBeginPath(ctx);
+void ofxNanoVG::circle(const ofVec2f& p, float r) { circle(p.x, p.y, r); }
+void ofxNanoVG::circle(float cx, float cy, float r) {
 	nvgCircle(ctx, cx, cy, r);
-
-	doOFDraw();
 }
 
-void ofxNanoVG::drawLine(float x1, float y1, float x2, float y2, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-
-	nvgBeginPath(ctx);
+void ofxNanoVG::line(const ofVec2f& p1, const ofVec2f& p2) { line(p1.x, p1.y, p2.x, p2.y); }
+void ofxNanoVG::line(float x1, float y1, float x2, float y2) {
 	nvgMoveTo(ctx, x1, y1);
 	nvgLineTo(ctx, x2, y2);
-
-	nvgStroke(ctx);
 }
 
-void ofxNanoVG::drawPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
+void ofxNanoVG::followPolyline(const ofPolyline &line) {
 	if (line.size() == 0) {
 		return;
 	}
 
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-
 	const vector<ofPoint>& verts = line.getVertices();
-	nvgBeginPath(ctx);
 	nvgMoveTo(ctx, verts[0].x, verts[0].y);
 	for (int i=1; i<verts.size(); i++) {
 		nvgLineTo(ctx, verts[i].x, verts[i].y);
 	}
-
-	nvgStroke(ctx);
 }
 
-void ofxNanoVG::fillPolyline(const ofPolyline &line, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	if (line.size() == 0) {
-		return;
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-
-	const vector<ofPoint>& verts = line.getVertices();
-	nvgBeginPath(ctx);
-	nvgMoveTo(ctx, verts[0].x, verts[0].y);
-	for (int i=1; i<verts.size(); i++) {
-		nvgLineTo(ctx, verts[i].x, verts[i].y);
-	}
-
-	nvgFill(ctx);
-}
-
-void ofxNanoVG::drawPath(const ofPath& path, float x, float y, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
+void ofxNanoVG::followPath(const ofPath& path, float x, float y) {
 	if (x!=0 || y!=0) {
 		nvgTranslate(ctx, x, y);
 	}
 
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-	nvgBeginPath(ctx);
 	for (const ofPath::Command& c : path.getCommands()) {
 		switch (c.type) {
 			case ofPath::Command::moveTo:
@@ -318,168 +210,79 @@ void ofxNanoVG::drawPath(const ofPath& path, float x, float y, enum LineParam ca
 		}
 
 	}
-	nvgStroke(ctx);
-
+	
 	if (x!=0 || y!=0) {
 		nvgTranslate(ctx, -x, -y);
 	}
 }
 
-void ofxNanoVG::fillPath(const ofPath& path, float x, float y, enum LineParam cap, enum LineParam join)
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	if (x!=0 || y!=0) {
-		nvgTranslate(ctx, x, y);
-	}
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
-	nvgLineCap(ctx, cap);
-	nvgLineJoin(ctx, join);
-	nvgBeginPath(ctx);
-	for (const ofPath::Command& c : path.getCommands()) {
-		switch (c.type) {
-			case ofPath::Command::moveTo:
-				nvgMoveTo(ctx, c.to.x, c.to.y);
-				break;
-			case ofPath::Command::lineTo:
-				nvgLineTo(ctx, c.to.x, c.to.y);
-				break;
-			case ofPath::Command::bezierTo:
-				nvgBezierTo(ctx, c.cp1.x, c.cp1.y, c.cp2.x, c.cp2.y, c.to.x, c.to.y);
-				break;
-			default:
-				break;
-		}
-	}
-	nvgFill(ctx);
-
-	if (x!=0 || y!=0) {
-		nvgTranslate(ctx, -x, -y);
-	}
-}
-
-void ofxNanoVG::beginShape()
-{
-	if (!bInFrame) {
-		return;
-	}
-
-	if (bInShape) {
-		ofLogError("ofxNanoVG") << "call to beginShape while already inside shape drawing"<<endl;
-		return;
-	}
-
-	bInShape = true;
-	vertexCount = 0;
-
-	nvgBeginPath(ctx);
-}
-
-void ofxNanoVG::endShape()
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
-		return;
-	}
-
-	doOFDraw();
-	bInShape = false;
-}
-
-void ofxNanoVG::endShapeStroke()
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
-		return;
-	}
-	
-	nvgStroke(ctx);
-	bInShape = false;
-}
-
-void ofxNanoVG::endShapeFill()
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to endShape without previous call to beginShape"<<endl;
-		return;
-	}
-	
-	nvgFill(ctx);
-	bInShape = false;
-}
-
-void ofxNanoVG::moveTo(float x, float y)
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to moveTo without previous call to beginShape"<<endl;
-		return;
-	}
-
+void ofxNanoVG::moveTo(const ofVec2f& p) { moveTo(p.x, p.y); }
+void ofxNanoVG::moveTo(float x, float y) {
 	nvgMoveTo(ctx, x, y);
-	vertexCount++;
 }
 
-void ofxNanoVG::lineTo(float x, float y)
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to lineTo without previous call to beginShape"<<endl;
-		return;
-	}
-
+void ofxNanoVG::lineTo(const ofVec2f& p) { lineTo(p.x, p.y); }
+void ofxNanoVG::lineTo(float x, float y) {
 	nvgLineTo(ctx, x, y);
-	vertexCount++;
 }
 
-void ofxNanoVG::bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y)
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to lineTo without previous call to beginShape"<<endl;
-		return;
-	}
-
+void ofxNanoVG::bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y) {
 	nvgBezierTo(ctx, cx1, cy1, cx2, cy2, x, y);
 }
 
-void ofxNanoVG::vertex(float x, float y)
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to vertex(x,y) without beginShape"<<endl;
-		return;
-	}
 
-	if (vertexCount==0) {
-		nvgMoveTo(ctx, x, y);
-	}
-	else {
-		nvgLineTo(ctx, x, y);
-	}
-
-	vertexCount++;
+/******
+ * Style
+ */
+void ofxNanoVG::setStrokeWidth(float width) {
+	nvgStrokeWidth(ctx, width);
 }
 
-void ofxNanoVG::bezierVertex(float cx1, float cy1, float cx2, float cy2, float x, float y)
-{
-	if (!bInShape) {
-		ofLogError("ofxNanoVG") << "call to bezierVertex(x,y) without beginShape"<<endl;
-		return;
-	}
-
-	if (vertexCount==0) {
-		nvgMoveTo(ctx, 0, 0);
-	}
-
-	nvgBezierTo(ctx, cx1, cy1, cx2, cy2, x, y);
-
-	vertexCount++;
+void ofxNanoVG::setLineCap(enum LineParam cap) {
+	nvgLineCap(ctx, cap);
 }
 
+void ofxNanoVG::setLineJoin(enum LineParam join) {
+	nvgLineJoin(ctx, join);
+}
+
+void ofxNanoVG::setFillColor(const ofFloatColor &c) {
+	nvgFillColor(ctx, toNVGcolor(c));
+}
+
+void ofxNanoVG::setFillPaint(const NVGpaint &paint) {
+	nvgFillPaint(ctx, paint);
+}
+
+void ofxNanoVG::setStrokeColor(const ofFloatColor &c) {
+	nvgStrokeColor(ctx, toNVGcolor(c));
+}
+
+void ofxNanoVG::setStrokePaint(const NVGpaint &paint)
+{
+	nvgStrokePaint(ctx, paint);
+}
+
+NVGpaint ofxNanoVG::getLinearGradientPaint(float sx, float sy, float ex, float ey, const ofColor &c1, const ofColor &c2)
+{
+	return nvgLinearGradient(ctx, sx, sy, ex, ey, toNVGcolor(c1), toNVGcolor(c2));
+}
+
+NVGpaint ofxNanoVG::getTexturePaint(const ofTexture& tex)
+{
+	if (tex.getTextureData().textureTarget != GL_TEXTURE_2D) {
+		ofLogError("ofxNanoVG") << "texture target should be GL_TEXTURE_2D";
+		return;
+	}
+	
+	int image = nvglCreateImageFromHandle(ctx, tex.getTextureData().textureID, tex.getWidth(), tex.getHeight(), 0);
+	if (image <= 0) {
+		ofLogError("ofxNanoVG") << "error uploading image to NanoVG";
+		return;
+	}
+	
+	return nvgImagePattern(ctx, -tex.getWidth()/2, -tex.getHeight()/2, tex.getWidth(), tex.getHeight(), 0, image, 1);
+}
 
 /*******************************************************************************
  * Text
@@ -536,11 +339,6 @@ void ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &
 	nvgTextLetterSpacing(ctx, font->letterSpacing);
 	nvgFontSize(ctx, fontSize);
 
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
-
 	nvgText(ctx, x, y, text.c_str(), NULL);
 }
 
@@ -566,11 +364,6 @@ void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const strin
 	nvgTextLetterSpacing(ctx, font->letterSpacing);
 	nvgTextLineHeight(ctx, font->lineHeight);
 	nvgFontSize(ctx, fontSize);
-
-	applyOFStyle();
-#ifdef ALWAYS_APPLY_OF_MATRIX
-	applyOFMatrix();
-#endif
 
 	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL);
 }
@@ -653,7 +446,7 @@ NSVGimage* ofxNanoVG::parseSvgFile(const string& filename, const string& units, 
 	return nsvgParseFromFile(ofToDataPath(filename).c_str(), units.c_str(), dpi);
 }
 
-void ofxNanoVG::drawSvg(NSVGimage* svg, float x, float y)
+void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y)
 {
 	if (svg == NULL) {
 		return;
@@ -667,11 +460,14 @@ void ofxNanoVG::drawSvg(NSVGimage* svg, float x, float y)
 	while (shape != NULL) {
 		NSVGpath* path = shape->paths;
 		while (path != NULL) {
-			beginShape();
 			for (int i=0; i<path->npts; i++) {
-				vertex(path->pts[i*2], path->pts[i*2+1]);
+				if (i==0) {
+					moveTo(path->pts[i*2], path->pts[i*2+1]);
+				}
+				else {
+					lineTo(path->pts[i*2], path->pts[i*2+1]);
+				}
 			}
-			endShape();
 			path = path->next;		// next path
 		}
 		shape = shape->next; 		// next shape
@@ -685,51 +481,6 @@ void ofxNanoVG::drawSvg(NSVGimage* svg, float x, float y)
 void ofxNanoVG::freeSvg(NSVGimage* svg)
 {
 	nsvgDelete(svg);
-}
-
-/******
- * Paint
- */
-
-void ofxNanoVG::setFillColor(const ofFloatColor &c)
-{
-	if (!bInitialized) {
-		return;
-	}
-
-	nvgFillColor(ctx, toNVGcolor(c));
-}
-
-void ofxNanoVG::setFillPaint(const NVGpaint &paint)
-{
-	if (!bInitialized) {
-		return;
-	}
-
-	nvgFillPaint(ctx, paint);
-}
-
-void ofxNanoVG::setStrokeColor(const ofFloatColor &c)
-{
-	if (!bInitialized) {
-		return;
-	}
-
-	nvgStrokeColor(ctx, toNVGcolor(c));
-}
-
-void ofxNanoVG::setStrokePaint(const NVGpaint &paint)
-{
-	if (!bInitialized) {
-		return;
-	}
-
-	nvgStrokePaint(ctx, paint);
-}
-
-NVGpaint ofxNanoVG::getLinearGradient(float sx, float sy, float ex, float ey, const ofColor &c1, const ofColor &c2)
-{
-	return nvgLinearGradient(ctx, sx, sy, ex, ey, toNVGcolor(c1), toNVGcolor(c2));
 }
 
 NVGcolor ofxNanoVG::toNVGcolor(const ofFloatColor& c)

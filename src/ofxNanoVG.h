@@ -57,53 +57,53 @@ public:
 	// lineCap: one of: NVG_BUTT (default), NVG_ROUND, NVG_SQUARE
 	// lineJoin: one of: NVG_MITER (default), NVG_ROUND, NVG_BEVEL
 
-	void drawRect(float x, float y, float w, float h);
-	void drawRect(const ofRectangle& rect) {
-		drawRect(rect.x, rect.y, rect.width, rect.height);
-	}
-	void drawRoundedRect(float x, float y, float w, float h, float r);
-	void drawRoundedRect(const ofRectangle& rect, float r) {
-		drawRoundedRect(rect.x, rect.y, rect.width, rect.height, r);
-	}
-	void drawEllipse(float cx, float cy, float rx, float ry);
-	void drawCircle(const ofPoint& p, float r) {
-		drawCircle(p.x, p.y, r);
-	}
-	void drawCircle(float cx, float cy, float r);
-	void drawLine(const ofPoint& p1, const ofPoint& p2,
-				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER) {
-		drawLine(p1.x, p1.y, p2.x, p2.y, cap, join);
-	}
-	void drawLine(float x1, float y1, float x2, float y2,
-				  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void drawPolyline(const ofPolyline& line,
-					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void fillPolyline(const ofPolyline& line,
-					  enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void drawPath(const ofPath& path, float x=0, float y=0, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void fillPath(const ofPath& path, float x=0, float y=0, enum LineParam cap=NVG_BUTT, enum LineParam join=NVG_MITER);
-	void beginShape();
-	void endShape();
-	void endShapeStroke();
-	void endShapeFill();
-	void moveTo(const ofVec2f& p) {
-		moveTo(p.x, p.y);
-	}
+	// must call beginPath before drawing
+	void beginPath();
+	
+	// call fillPath or strokePath after drawing with the functions below to fill/stroke the path
+	void fillPath();
+	void strokePath();
+
+	void rect(const ofRectangle& r);
+	void rect(float x, float y, float w, float h);
+	void roundedRect(const ofRectangle& r, float ang);
+	void roundedRect(float x, float y, float w, float h, float r);
+	void ellipse(const ofVec2f& p, float rx, float ry);
+	void ellipse(float cx, float cy, float rx, float ry);
+	void circle(const ofVec2f& p, float r);
+	void circle(float cx, float cy, float r);
+	void line(const ofVec2f& p1, const ofVec2f& p2);
+	void line(float x1, float y1, float x2, float y2);
+	void moveTo(const ofVec2f& p);
 	void moveTo(float x, float y);
-	void lineTo(const ofVec2f& p) {
-		lineTo(p.x, p.y);
-	}
+	void lineTo(const ofVec2f& p);
 	void lineTo(float x, float y);
 	void bezierTo(float cx1, float cy1, float cx2, float cy2, float x, float y);
-	void vertex(const ofVec2f& p) {
-		vertex(p.x, p.y);
-	}
-	void vertex(float x, float y);
-	void bezierVertex(const ofVec2f& cp1, const ofVec2f& cp2, const ofVec2f& p) {
-		bezierVertex(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y);
-	}
-	void bezierVertex(float cx1, float cy1, float cx2, float cy2, float x, float y);
+	void followPolyline(const ofPolyline& line);
+	void followPath(const ofPath& path, float x=0, float y=0);
+
+	/******
+	 * For convenience
+	 */
+
+	void strokeRect(float x, float y, float w, float h, const ofColor& c);
+	void fillRect(float x, float y, float w, float h, const ofColor& c);
+	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c);
+	void fillRoundedRect(float x, float y, float w, float h, float r, const ofColor& c);
 	
+	/******
+	 * Style
+	 */
+	void setStrokeWidth(float width);
+	void setLineCap(enum LineParam cap);
+	void setLineJoin(enum LineParam join);
+	void setFillColor(const ofFloatColor& c);
+	void setFillPaint(const NVGpaint& paint);
+	void setStrokeColor(const ofFloatColor& c);
+	void setStrokePaint(const NVGpaint& paint);
+	NVGpaint getLinearGradientPaint(float sx, float sy, float ex, float ey, const ofColor& c1, const ofColor& c2);
+	NVGpaint getTexturePaint(const ofTexture& tex);
+	static inline NVGcolor toNVGcolor(const ofFloatColor& c);
 
 	/******
 	 * Text
@@ -134,44 +134,25 @@ public:
 	// returns font id that can be used later
 	Font* addFont(const string& name, const string& filename);
 	Font* getFont(const string& name);
-	void drawText(const string& fontName, float x, float y,
-				  const string& text, float fontSize);
-	void drawText(Font* font, float x, float y,
-				  const string& text, float fontSize);
-	void drawTextBox(const string& fontName, float x, float y,
-					 const string& text, float fontSize, float breakRowWidth);
-	void drawTextBox(Font* font, float x, float y,
-					 const string& text, float fontSize, float breakRowWidth);
+	void drawText(const string& fontName, float x, float y, const string& text, float fontSize);
+	void drawText(Font* font, float x, float y, const string& text, float fontSize);
+	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth);
+	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth);
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
-	ofRectangle getTextBounds(const string& fontName, float x, float y,
-							  const string& text, float fontSize);
-	ofRectangle getTextBounds(Font* font, float x, float y,
-							  const string& text, float fontSize);
-	ofRectangle getTextBoxBounds(const string& fontName, float x, float y,
-								 const string& text, float fontSize, float breakRowWidth);
-	ofRectangle getTextBoxBounds(Font* font, float x, float y,
-								 const string& text, float fontSize, float breakRowWidth);
+	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize);
+	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize);
+	ofRectangle getTextBoxBounds(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth);
+	ofRectangle getTextBoxBounds(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth);
 	void setFontBlur(float blur);
-
 	
 	/******
 	 * SVG
 	 */
 	
 	NSVGimage* parseSvgFile(const string& filename, const string& units, float dpi);
-	void drawSvg(NSVGimage* svg, float x=0, float y=0);
+	void followSvg(NSVGimage* svg, float x=0, float y=0);
 	void freeSvg(NSVGimage* svg);
 	
-	/******
-	 * Paints
-	 */
-	void setFillColor(const ofFloatColor& c);
-	void setFillPaint(const NVGpaint& paint);
-	void setStrokeColor(const ofFloatColor& c);
-	void setStrokePaint(const NVGpaint& paint);
-	NVGpaint getLinearGradient(float sx, float sy, float ex, float ey, const ofColor& c1, const ofColor& c2);
-	static inline NVGcolor toNVGcolor(const ofFloatColor& c);
-
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
 	void resetMatrix();
@@ -186,7 +167,6 @@ private:
 	float framePixRatio;
 
 	// for shapes
-	bool bInShape;
 	int vertexCount;
 
 
@@ -201,7 +181,6 @@ private:
 	ofxNanoVG() :
 		bInitialized(false),
 		bInFrame(false),
-		bInShape(false),
 		ctx(NULL) {}
 
 	// make sure there are no copies
