@@ -222,6 +222,9 @@ public:
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
 	void resetMatrix();
+	void enableScissor(float x, float y, float w, float h);
+	void disableScissor();
+
 	// apply OF color and stroke width
 	void applyOFStyle();
 

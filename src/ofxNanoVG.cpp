@@ -524,6 +524,24 @@ void ofxNanoVG::resetMatrix()
 	nvgResetTransform(ctx);
 }
 
+void ofxNanoVG::enableScissor(float x, float y, float w, float h)
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgScissor(ctx, x, y, w, h);
+}
+
+void ofxNanoVG::disableScissor()
+{
+	if (!bInitialized) {
+		return;
+	}
+
+	nvgResetScissor(ctx);
+}
+
 //------------------------------------------------------------------
 // private
 //------------------------------------------------------------------
