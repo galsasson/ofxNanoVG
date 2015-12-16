@@ -91,6 +91,11 @@ public:
 		nvgCircle(ctx, cx, cy, r);
 	}
 	
+	inline void arc(const ofVec2f& p, float r, float a0, float a1, int dir) { arc(p.x, p.y, r, a0, a1, dir); }
+	inline void arc(float cx, float cy, float r, float a0, float a1, int dir) {
+		nvgArc(ctx, cx, cy, r, a0, a1, dir);
+	}
+
 	inline void line(const ofVec2f& p1, const ofVec2f& p2) { line(p1.x, p1.y, p2.x, p2.y); }
 	inline void line(float x1, float y1, float x2, float y2) {
 		nvgMoveTo(ctx, x1, y1);
