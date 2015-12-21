@@ -8,8 +8,6 @@
 
 #include "ofxNanoVG.h"
 
-//#define ALWAYS_APPLY_OF_MATRIX
-
 #define NVG_DISABLE_FACE_CULL_FOR_TRIANGLES
 
 #define FONTSTASH_IMPLEMENTATION
@@ -17,8 +15,8 @@
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"
 
-#if !defined(NANOVG_GL3_IMPLEMENTATION) && !defined(NANOVG_GLES2_IMPLEMENTATION)
-#error "ofxNanoVG: Please add one of the following definitions to your project NANOVG_GL3_IMPLEMENTATION, NANOVG_GLES2_IMPLEMENTATION"
+#if !defined(NANOVG_GL3_IMPLEMENTATION) && !defined(NANOVG_GLES2_IMPLEMENTATION) && !defined(NANOVG_GL2_IMPLEMENTATION)
+#error "ofxNanoVG: Please add one of the following definitions to your project NANOVG_GL3_IMPLEMENTATION, NANOVG_GL2_IMPLEMENTATION, NANOVG_GLES2_IMPLEMENTATION"
 #endif
 
 #define NANOSVG_IMPLEMENTATION
@@ -32,6 +30,8 @@ ofxNanoVG::~ofxNanoVG()
 
 #ifdef NANOVG_GL3_IMPLEMENTATION
 	nvgDeleteGL3(ctx);
+#elif defined NANOVG_GL2_IMPLEMENTATION
+	nvgDeleteGL2(ctx);
 #elif defined NANOVG_GLES2_IMPLEMENTATION
 	nvgDeleteGLES2(ctx);
 #endif
@@ -45,6 +45,8 @@ void ofxNanoVG::setup(bool stencilStrokes, bool debug)
 
 #ifdef NANOVG_GL3_IMPLEMENTATION
 	ctx = nvgCreateGL3(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
+#elif NANOVG_GL2_IMPLEMENTATION
+	ctx = nvgCreateGL2(NVG_ANTIALIAS /*| (stencilStrokes?NVG_STENCIL_STROKES:0)*/ | (debug?NVG_DEBUG:0));
 #elif defined NANOVG_GLES2_IMPLEMENTATION
 	ctx = nvgCreateGLES2(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #endif
