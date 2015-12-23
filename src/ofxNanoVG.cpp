@@ -275,13 +275,13 @@ NVGpaint ofxNanoVG::getTexturePaint(const ofTexture& tex)
 {
 	if (tex.getTextureData().textureTarget != GL_TEXTURE_2D) {
 		ofLogError("ofxNanoVG") << "texture target should be GL_TEXTURE_2D";
-		return;
+		return NVGpaint();
 	}
 	
 	int image = nvglCreateImageFromHandle(ctx, tex.getTextureData().textureID, tex.getWidth(), tex.getHeight(), 0);
 	if (image <= 0) {
 		ofLogError("ofxNanoVG") << "error uploading image to NanoVG";
-		return;
+		return NVGpaint();
 	}
 	
 	return nvgImagePattern(ctx, -tex.getWidth()/2, -tex.getHeight()/2, tex.getWidth(), tex.getHeight(), 0, image, 1);

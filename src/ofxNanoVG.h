@@ -14,8 +14,6 @@
 #include "nanosvg.h"
 #include "nanovg.h"
 
-class NVGcontext;
-
 class ofxNanoVG
 {
 public:
