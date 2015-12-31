@@ -91,7 +91,7 @@ public:
 	
 	inline void arc(const ofVec2f& p, float r, float a0, float a1, int dir) { arc(p.x, p.y, r, a0, a1, dir); }
 	inline void arc(float cx, float cy, float r, float a0, float a1, int dir) {
-		nvgArc(ctx, cx, cy, r, a0, a1, dir);
+		nvgArc(ctx, cx, cy, r, ofDegToRad(a0), ofDegToRad(a1), dir);
 	}
 
 	inline void line(const ofVec2f& p1, const ofVec2f& p2) { line(p1.x, p1.y, p2.x, p2.y); }
@@ -122,6 +122,7 @@ public:
 	 * For convenience
 	 */
 
+	void strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width=1);
 	void strokeRect(float x, float y, float w, float h, const ofColor& c, float width=1);
 	void fillRect(float x, float y, float w, float h, const ofColor& c);
 	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width=1);
@@ -130,7 +131,8 @@ public:
 	void fillEllipse(float cx, float cy, float rx, float ry, const ofColor& c);
 	void strokeCircle(float cx, float cy, float r, const ofColor& c, float width=1);
 	void fillCircle(float cx, float cy, float r, const ofColor& c);
-	void strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width=1);
+	void strokeArc(float cx, float cy, float r, float a0, float a1, int dir, const ofColor& c, float width=1);
+	void fillArc(float cx, float cy, float r, float a0, float a1, int dir, const ofColor& c);
 	void strokePolyline(const ofPolyline& line, const ofColor& c, float width=1);
 	void fillPolyline(const ofPolyline& line, const ofColor& c);
 	

@@ -184,6 +184,14 @@ void ofxNanoVG::followPath(const ofPath& path, float x, float y) {
  * For convenience
  */
 
+void ofxNanoVG::strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	line(x1, y1, x2, y2);
+	strokePath();
+}
+
 void ofxNanoVG::strokeRect(float x, float y, float w, float h, const ofColor& c, float width) {
 	beginPath();
 	setStrokeColor(c);
@@ -244,11 +252,20 @@ void ofxNanoVG::fillCircle(float cx, float cy, float r, const ofColor& c) {
 	fillPath();
 }
 
-void ofxNanoVG::strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width) {
+void ofxNanoVG::strokeArc(float cx, float cy, float r, float a0, float a1, int dir, const ofColor& c, float width)
+{
 	beginPath();
 	setStrokeColor(c);
 	setStrokeWidth(width);
-	line(x1, y1, x2, y2);
+	arc(cx, cy, r, a0, a1, dir);
+	strokePath();
+}
+
+void ofxNanoVG::fillArc(float cx, float cy, float r, float a0, float a1, int dir, const ofColor& c)
+{
+	beginPath();
+	setFillColor(c);
+	arc(cx, cy, r, a0, a1, dir);
 	strokePath();
 }
 
