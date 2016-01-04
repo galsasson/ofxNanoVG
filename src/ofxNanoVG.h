@@ -91,7 +91,7 @@ public:
 	
 	inline void arc(const ofVec2f& p, float r, float a0, float a1, int dir) { arc(p.x, p.y, r, a0, a1, dir); }
 	inline void arc(float cx, float cy, float r, float a0, float a1, int dir) {
-		nvgArc(ctx, cx, cy, r, ofDegToRad(a0), ofDegToRad(a1), dir);
+		nvgArc(ctx, cx, cy, r, ofDegToRad(a0-90), ofDegToRad(a1-90), dir);
 	}
 
 	inline void line(const ofVec2f& p1, const ofVec2f& p2) { line(p1.x, p1.y, p2.x, p2.y); }
@@ -209,6 +209,7 @@ public:
 	void drawText(Font* font, float x, float y, const string& text, float fontSize);
 	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth);
 	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth);
+	void drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize);
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
 	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize);
 	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize);
