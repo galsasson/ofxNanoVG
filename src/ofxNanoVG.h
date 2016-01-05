@@ -209,7 +209,7 @@ public:
 	void drawText(Font* font, float x, float y, const string& text, float fontSize);
 	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth);
 	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth);
-	void drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize);
+	float drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize);
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
 	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize);
 	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize);

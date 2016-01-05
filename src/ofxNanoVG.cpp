@@ -388,12 +388,12 @@ void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const strin
 	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL);
 }
 
-void ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string &text, float fontSize)
+float ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string &text, float fontSize)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
-		ofLogError("ofxNanoVG::drawTextBox", "cannot find font: %s", fontName.c_str());
-		return;
+		ofLogError("ofxNanoVG::drawTextOnArc", "cannot find font: %s", fontName.c_str());
+		return 0;
 	}
 	
 	nvgFontFaceId(ctx, font->id);
@@ -407,17 +407,23 @@ void ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float 
 	nvgTranslate(ctx, cx, cy);
 	float angle=startAng;
 	for (int i=0; i<text.length(); i++) {
+		nvgTextBounds(ctx, 0, 0, text.c_str()+i, text.c_str()+i+1, bounds);
+
+		if (text[i] == ' ') {
+			angle += ((dir==1)?1:-1)*fontSize;
+			continue;
+		}
 		nvgSave(ctx);
 		
-		nvgRotate(ctx, ofDegToRad(angle + ((dir==-1)?180:0)));
+		nvgRotate(ctx, ofDegToRad((angle+(bounds[2]/2/radius)) + ((dir==-1)?180:0)));
 		nvgTranslate(ctx, 0, (dir==1)?-radius:radius);
 		nvgText(ctx, 0, 0, text.c_str()+i, text.c_str()+i+1);
 		
 		nvgRestore(ctx);
-		nvgTextBounds(ctx, 0, 0, text.c_str()+i, text.c_str()+i+1, bounds);
-		angle += ofRadToDeg((bounds[2]+spacing)/radius);
+		angle += ((dir==1)?1:-1)*ofRadToDeg((bounds[2]+spacing)/radius);
 	}
 	nvgRestore(ctx);
+	return angle;
 }
 
 void ofxNanoVG::setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver)
