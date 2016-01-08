@@ -581,6 +581,11 @@ void ofxNanoVG::resetMatrix()
 	nvgResetTransform(ctx);
 }
 
+void ofxNanoVG::translateMatrix(float x, float y)
+{
+	nvgTranslate(ctx, x, y);
+}
+
 void ofxNanoVG::enableScissor(float x, float y, float w, float h)
 {
 	if (!bInitialized) {

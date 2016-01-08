@@ -228,6 +228,7 @@ public:
 	// copy current OF matrix to nanovg
 	void applyOFMatrix();
 	void resetMatrix();
+	void translateMatrix(float x, float y);
 	void enableScissor(float x, float y, float w, float h);
 	void disableScissor();
 
