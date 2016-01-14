@@ -123,6 +123,9 @@ public:
 	 */
 
 	void strokeLine(float x1, float y1, float x2, float y2, const ofColor& c, float width=1);
+	inline void strokeLine(const ofVec2f& p1, const ofVec2f& p2, const ofColor& c, float width=1) {
+		strokeLine(p1.x, p1.y, p2.x, p2.y, c, width);
+	}
 	void strokeRect(float x, float y, float w, float h, const ofColor& c, float width=1);
 	void fillRect(float x, float y, float w, float h, const ofColor& c);
 	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width=1);
