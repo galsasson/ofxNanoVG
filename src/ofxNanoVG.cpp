@@ -46,7 +46,7 @@ void ofxNanoVG::setup(bool stencilStrokes, bool debug)
 #ifdef NANOVG_GL3_IMPLEMENTATION
 	ctx = nvgCreateGL3(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #elif NANOVG_GL2_IMPLEMENTATION
-	ctx = nvgCreateGL2(NVG_ANTIALIAS /*| (stencilStrokes?NVG_STENCIL_STROKES:0)*/ | (debug?NVG_DEBUG:0));
+	ctx = nvgCreateGL2(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #elif defined NANOVG_GLES2_IMPLEMENTATION
 	ctx = nvgCreateGLES2(NVG_ANTIALIAS | (stencilStrokes?NVG_STENCIL_STROKES:0) | (debug?NVG_DEBUG:0));
 #endif
