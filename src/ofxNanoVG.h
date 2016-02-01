@@ -133,7 +133,7 @@ public:
 	void strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width=1);
 	void fillEllipse(float cx, float cy, float rx, float ry, const ofColor& c);
 	void strokeCircle(float cx, float cy, float r, const ofColor& c, float width=1);
-	inline void strokeCircle(const ofVec2f& p, float r, const ofColor& c) { strokeCircle(p.x, p.y, r, c); }
+	inline void strokeCircle(const ofVec2f& p, float r, const ofColor& c, float width=1) { strokeCircle(p.x, p.y, r, c, width); }
 	void fillCircle(float cx, float cy, float r, const ofColor& c);
 	inline void fillCircle(const ofVec2f& p, float r, const ofColor& c) { fillCircle(p.x, p.y, r, c); }
 	void strokeArc(float cx, float cy, float r, float a0, float a1, int dir, const ofColor& c, float width=1);
