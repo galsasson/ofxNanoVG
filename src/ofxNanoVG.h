@@ -128,6 +128,9 @@ public:
 	}
 	void strokeRect(float x, float y, float w, float h, const ofColor& c, float width=1);
 	void fillRect(float x, float y, float w, float h, const ofColor& c);
+	void fillRect(const ofRectangle& rect, const ofColor& c) {
+		fillRect(rect.x, rect.y, rect.width, rect.height, c);
+	}
 	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width=1);
 	void fillRoundedRect(float x, float y, float w, float h, float r, const ofColor& c);
 	void strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width=1);
