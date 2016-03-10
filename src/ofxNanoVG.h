@@ -128,6 +128,9 @@ public:
 	}
 	void strokeRect(float x, float y, float w, float h, const ofColor& c, float width=1);
 	void fillRect(float x, float y, float w, float h, const ofColor& c);
+	void fillRect(const ofRectangle& rect, const ofColor& c) {
+		fillRect(rect.x, rect.y, rect.width, rect.height, c);
+	}
 	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width=1);
 	void fillRoundedRect(float x, float y, float w, float h, float r, const ofColor& c);
 	void strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width=1);
@@ -214,7 +217,7 @@ public:
 	void drawText(Font* font, float x, float y, const string& text, float fontSize);
 	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth);
 	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth);
-	float drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize);
+	float drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize, bool justMeasure=false);	// returns the radial travel in degrees
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
 	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize);
 	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize);
