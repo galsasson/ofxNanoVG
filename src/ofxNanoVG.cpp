@@ -153,6 +153,20 @@ void ofxNanoVG::followPolyline(const ofPolyline &line) {
 	}
 }
 
+void ofxNanoVG::followPolylineDashed(const ofPolyline &line, float onpx, float offpx) {
+	if (line.size() == 0) {
+		return;
+	}
+
+	float length = line.getPerimeter();
+	for (float t=0; t<=length-onpx; t+=onpx+offpx) {
+		ofVec2f p1 = line.getPointAtLength(t);
+		ofVec2f p2 = line.getPointAtLength(t+onpx);
+		nvgMoveTo(ctx, p1.x, p1.y);
+		nvgLineTo(ctx, p2.x, p2.y);
+	}
+}
+
 void ofxNanoVG::followPath(const ofPath& path, float x, float y) {
 	if (x!=0 || y!=0) {
 		nvgTranslate(ctx, x, y);

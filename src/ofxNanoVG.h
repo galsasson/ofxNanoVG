@@ -116,6 +116,7 @@ public:
 	}
 	
 	void followPolyline(const ofPolyline& line);
+	void followPolylineDashed(const ofPolyline& line, float onpx=4, float offpx=4);
 	void followPath(const ofPath& path, float x=0, float y=0);
 
 	/******
