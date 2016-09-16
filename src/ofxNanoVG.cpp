@@ -28,6 +28,11 @@ ofxNanoVG::~ofxNanoVG()
 		return;
 	}
 
+	// clear added fonts
+	for (Font* f: fonts) {
+		delete f;
+	}
+
 #ifdef NANOVG_GL3_IMPLEMENTATION
 	nvgDeleteGL3(ctx);
 #elif defined NANOVG_GL2_IMPLEMENTATION
