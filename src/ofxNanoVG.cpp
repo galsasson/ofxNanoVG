@@ -356,29 +356,29 @@ ofxNanoVG::Font* ofxNanoVG::getFont(const string &name)
 	return NULL;
 }
 
-void ofxNanoVG::drawText(const string &fontName, float x, float y, const string &text, float fontSize)
+float ofxNanoVG::drawText(const string &fontName, float x, float y, const string &text, float fontSize)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::drawText", "cannot find font: %s", fontName.c_str());
-		return;
+		return 0;
 	}
 
-	drawText(font, x, y, text, fontSize);
+	return drawText(font, x, y, text, fontSize);
 }
 
-void ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
+float ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
 {
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::drawText", "font == NULL");
-		return;
+		return 0;
 	}
 
 	nvgFontFaceId(ctx, font->id);
 	nvgTextLetterSpacing(ctx, font->letterSpacing);
 	nvgFontSize(ctx, fontSize);
 
-	nvgText(ctx, x, y, text.c_str(), NULL);
+	return nvgText(ctx, x, y, text.c_str(), NULL);
 }
 
 void ofxNanoVG::drawTextBox(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight)
