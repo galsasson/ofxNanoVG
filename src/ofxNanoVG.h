@@ -78,7 +78,11 @@ public:
 	inline void roundedRect(float x, float y, float w, float h, float r) {
 		nvgRoundedRect(ctx, x, y, w, h, r);
 	}
-	
+	inline void roundedRect(const ofRectangle &r, float ang_tl, float ang_tr, float ang_br, float ang_bl) { roundedRect(r.x, r.y, r.width, r.height, ang_tl, ang_tr, ang_br, ang_bl); }
+	inline void roundedRect(float x, float y, float w, float h, float r_tl, float r_tr, float r_br, float r_bl) {
+		nvgRoundedRect4(ctx, x, y, w, h, r_tl, r_tr, r_br, r_bl);
+	}
+
 	inline void ellipse(const ofVec2f& p, float rx, float ry) { ellipse(p.x, p.y, rx, ry); }
 	inline void ellipse(float cx, float cy, float rx, float ry) {
 		nvgEllipse(ctx, cx, cy, rx, ry);
@@ -134,6 +138,8 @@ public:
 	}
 	void strokeRoundedRect(float x, float y, float w, float h, float r, const ofColor& c, float width=1);
 	void fillRoundedRect(float x, float y, float w, float h, float r, const ofColor& c);
+	void strokeRoundedRect(float x, float y, float w, float h, float r_tl, float r_tr, float r_br, float r_bl, const ofColor& c, float width=1);
+	void fillRoundedRect(float x, float y, float w, float h, float r_tl, float r_tr, float r_br, float r_bl, const ofColor& c);
 	void strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width=1);
 	void fillEllipse(float cx, float cy, float rx, float ry, const ofColor& c);
 	void strokeCircle(float cx, float cy, float r, const ofColor& c, float width=1);
