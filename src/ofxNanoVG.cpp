@@ -241,6 +241,21 @@ void ofxNanoVG::fillRoundedRect(float x, float y, float w, float h, float r, con
 	fillPath();
 }
 
+void ofxNanoVG::strokeRoundedRect(float x, float y, float w, float h, float r_tl, float r_tr, float r_br, float r_bl, const ofColor& c, float width) {
+	beginPath();
+	setStrokeColor(c);
+	setStrokeWidth(width);
+	roundedRect(x, y, w, h, r_tl, r_tr, r_br, r_bl);
+	strokePath();
+}
+
+void ofxNanoVG::fillRoundedRect(float x, float y, float w, float h, float r_tl, float r_tr, float r_br, float r_bl, const ofColor& c) {
+	beginPath();
+	setFillColor(c);
+	roundedRect(x, y, w, h, r_tl, r_tr, r_br, r_bl);
+	fillPath();
+}
+
 void ofxNanoVG::strokeEllipse(float cx, float cy, float rx, float ry, const ofColor& c, float width) {
 	beginPath();
 	setStrokeColor(c);
