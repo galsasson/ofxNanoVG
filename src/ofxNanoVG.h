@@ -64,9 +64,17 @@ public:
 	inline void strokePath() {
 		nvgStroke(ctx);
 	}
+	inline void strokePath(const ofColor& c) {
+		setStrokeColor(c);
+		strokePath();
+	}
 	
 	inline void fillPath() {
 		nvgFill(ctx);
+	}
+	inline void fillPath(const ofColor& c) {
+		setFillColor(c);
+		fillPath();
 	}
 	
 	inline void rect(const ofRectangle& r) { rect(r.x, r.y, r.width, r.height); }
