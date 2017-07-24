@@ -140,6 +140,9 @@ public:
 		strokeLine(p1.x, p1.y, p2.x, p2.y, c, width);
 	}
 	void strokeRect(float x, float y, float w, float h, const ofColor& c, float width=1);
+    void strokeRect(const ofRectangle& rect, const ofColor& c, float width=1) {
+        strokeRect(rect.x, rect.y, rect.width, rect.height, c, width);
+    }
 	void fillRect(float x, float y, float w, float h, const ofColor& c);
 	void fillRect(const ofRectangle& rect, const ofColor& c) {
 		fillRect(rect.x, rect.y, rect.width, rect.height, c);
