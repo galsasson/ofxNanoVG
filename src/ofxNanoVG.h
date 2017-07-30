@@ -231,16 +231,16 @@ public:
 	// returns font id that can be used later
 	Font* addFont(const string& name, const string& filename);
 	Font* getFont(const string& name);
-	float drawText(const string& fontName, float x, float y, const string& text, float fontSize);
-	float drawText(Font* font, float x, float y, const string& text, float fontSize);
-	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1);
-	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1);
-	float drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize, bool justMeasure=false);	// returns the radial travel in degrees
+	float drawText(const string& fontName, float x, float y, const string& text, float fontSize, bool rtl=false);
+	float drawText(Font* font, float x, float y, const string& text, float fontSize, bool rtl=false);
+	void drawTextBox(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1, bool rtl=false);
+	void drawTextBox(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1, bool rtl=false);
+	float drawTextOnArc(const string& fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string& text, float fontSize, bool justMeasure=false, bool rtl=false);	// returns the radial travel in degrees
 	void setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlign ver);
-	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize);
-	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize);
-	ofRectangle getTextBoxBounds(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1);
-	ofRectangle getTextBoxBounds(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1);
+	ofRectangle getTextBounds(const string& fontName, float x, float y, const string& text, float fontSize, bool rtl=false);
+	ofRectangle getTextBounds(Font* font, float x, float y, const string& text, float fontSize, bool rtl=false);
+	ofRectangle getTextBoxBounds(const string& fontName, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1, bool rtl=false);
+	ofRectangle getTextBoxBounds(Font* font, float x, float y, const string& text, float fontSize, float breakRowWidth, float lineHeight=-1, bool rtl=false);
 	void setFontBlur(float blur);
 	
 	/******

@@ -371,7 +371,7 @@ ofxNanoVG::Font* ofxNanoVG::getFont(const string &name)
 	return NULL;
 }
 
-float ofxNanoVG::drawText(const string &fontName, float x, float y, const string &text, float fontSize)
+float ofxNanoVG::drawText(const string &fontName, float x, float y, const string &text, float fontSize, bool rtl)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
@@ -379,10 +379,10 @@ float ofxNanoVG::drawText(const string &fontName, float x, float y, const string
 		return 0;
 	}
 
-	return drawText(font, x, y, text, fontSize);
+	return drawText(font, x, y, text, fontSize, rtl);
 }
 
-float ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
+float ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, bool rtl)
 {
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::drawText", "font == NULL");
@@ -393,10 +393,10 @@ float ofxNanoVG::drawText(ofxNanoVG::Font *font, float x, float y, const string 
 	nvgTextLetterSpacing(ctx, font->letterSpacing);
 	nvgFontSize(ctx, fontSize);
 
-	return nvgText(ctx, x, y, text.c_str(), NULL);
+	return nvgText(ctx, x, y, text.c_str(), NULL, rtl);
 }
 
-void ofxNanoVG::drawTextBox(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight)
+void ofxNanoVG::drawTextBox(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight, bool rtl)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
@@ -404,10 +404,10 @@ void ofxNanoVG::drawTextBox(const string &fontName, float x, float y, const stri
 		return;
 	}
 
-	drawTextBox(font, x, y, text, fontSize, breakRowWidth, lineHeight);
+	drawTextBox(font, x, y, text, fontSize, breakRowWidth, lineHeight, rtl);
 }
 
-void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight)
+void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight, bool rtl)
 {
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::drawTextBox", "font == NULL");
@@ -419,10 +419,10 @@ void ofxNanoVG::drawTextBox(ofxNanoVG::Font *font, float x, float y, const strin
 	nvgTextLineHeight(ctx, lineHeight==-1?font->lineHeight:lineHeight);
 	nvgFontSize(ctx, fontSize);
 
-	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL);
+	nvgTextBox(ctx, x, y, breakRowWidth, text.c_str(), NULL, rtl);
 }
 
-float ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string &text, float fontSize, bool justMeasure)
+float ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float radius, float startAng, int dir, float spacing, const string &text, float fontSize, bool justMeasure, bool rtl)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
@@ -455,7 +455,7 @@ float ofxNanoVG::drawTextOnArc(const string &fontName, float cx, float cy, float
 			nvgSave(ctx);
 			nvgRotate(ctx, ofDegToRad((angle+(bounds[2]/2/radius)) + ((dir==-1)?180:0)));
 			nvgTranslate(ctx, 0, (dir==1)?-radius:radius);
-			nvgText(ctx, 0, 0, text.c_str()+i, text.c_str()+i+1);
+			nvgText(ctx, 0, 0, text.c_str()+i, text.c_str()+i+1, rtl);
 			nvgRestore(ctx);
 		}
 		angle += ((dir==1)?1:-1)*ofRadToDeg((bounds[2]+spacing)/radius);
@@ -469,7 +469,7 @@ void ofxNanoVG::setTextAlign(enum TextHorizontalAlign hor, enum TextVerticalAlig
 	nvgTextAlign(ctx, hor | ver);
 }
 
-ofRectangle ofxNanoVG::getTextBounds(const string &fontName, float x, float y, const string &text, float fontSize)
+ofRectangle ofxNanoVG::getTextBounds(const string &fontName, float x, float y, const string &text, float fontSize, bool rtl)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
@@ -477,10 +477,10 @@ ofRectangle ofxNanoVG::getTextBounds(const string &fontName, float x, float y, c
 		return ofRectangle();
 	}
 
-	return getTextBounds(font, x, y, text, fontSize);
+	return getTextBounds(font, x, y, text, fontSize, rtl);
 }
 
-ofRectangle ofxNanoVG::getTextBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize)
+ofRectangle ofxNanoVG::getTextBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, bool rtl)
 {
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::getTextBounds", "font == NULL");
@@ -497,7 +497,7 @@ ofRectangle ofxNanoVG::getTextBounds(ofxNanoVG::Font *font, float x, float y, co
 	return ofRectangle(bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1]);
 }
 
-ofRectangle ofxNanoVG::getTextBoxBounds(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight)
+ofRectangle ofxNanoVG::getTextBoxBounds(const string &fontName, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight, bool rtl)
 {
 	Font* font = getFont(fontName);
 	if (font == NULL) {
@@ -505,10 +505,10 @@ ofRectangle ofxNanoVG::getTextBoxBounds(const string &fontName, float x, float y
 		return ofRectangle();
 	}
 
-	return getTextBoxBounds(font, x, y, text, fontSize, breakRowWidth, lineHeight);
+	return getTextBoxBounds(font, x, y, text, fontSize, breakRowWidth, lineHeight, rtl);
 }
 
-ofRectangle ofxNanoVG::getTextBoxBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight)
+ofRectangle ofxNanoVG::getTextBoxBounds(ofxNanoVG::Font *font, float x, float y, const string &text, float fontSize, float breakRowWidth, float lineHeight, bool rtl)
 {
 	if (font == NULL) {
 		ofLogError("ofxNanoVG::getTextBoxBounds", "font == NULL");
