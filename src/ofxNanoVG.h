@@ -246,9 +246,14 @@ public:
 	/******
 	 * SVG
 	 */
+
+	enum SvgLineType {
+		SVG_LINEAR,
+		SVG_BEZIER
+	};
 	
 	NSVGimage* parseSvgFile(const string& filename, const string& units, float dpi);
-	void followSvg(NSVGimage* svg, float x=0, float y=0);
+	void followSvg(NSVGimage* svg, float x=0, float y=0, SvgLineType lineType=SVG_LINEAR);
 	void freeSvg(NSVGimage* svg);
 	
 	// copy current OF matrix to nanovg

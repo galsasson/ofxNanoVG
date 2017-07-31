@@ -542,7 +542,7 @@ NSVGimage* ofxNanoVG::parseSvgFile(const string& filename, const string& units, 
 	return nsvgParseFromFile(ofToDataPath(filename).c_str(), units.c_str(), dpi);
 }
 
-void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y)
+void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y, SvgLineType lineType)
 {
 	if (svg == NULL) {
 		return;
@@ -561,7 +561,17 @@ void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y)
 					moveTo(path->pts[i*2], path->pts[i*2+1]);
 				}
 				else {
-					lineTo(path->pts[i*2], path->pts[i*2+1]);
+					switch (lineType) {
+						case SVG_BEZIER:
+							bezierTo(path->pts[i*2], path->pts[i*2+1], path->pts[i*2+2], path->pts[i*2+3], path->pts[i*2+4], path->pts[i*2+5]);
+							i+=2;
+							break;
+						case SVG_LINEAR:
+						default:
+							lineTo(path->pts[i*2], path->pts[i*2+1]);
+							break;
+
+					}
 				}
 			}
 			path = path->next;		// next path
