@@ -151,7 +151,7 @@ void ofxNanoVG::followPolyline(const ofPolyline &line) {
 		return;
 	}
 
-	const vector<ofPoint>& verts = line.getVertices();
+	auto& verts = line.getVertices();
 	nvgMoveTo(ctx, verts[0].x, verts[0].y);
 	for (int i=1; i<verts.size(); i++) {
 		nvgLineTo(ctx, verts[i].x, verts[i].y);
@@ -609,7 +609,7 @@ void ofxNanoVG::applyOFMatrix()
 	ofVec2f skew(ofMatrix(0, 1), ofMatrix(1, 0));
 
 	// handle OF style vFlipped inside FBO
-	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()(1, 1) == 1) {
+	if (ofGetCurrentRenderer()->getCurrentOrientationMatrix()[1][1] == 1) {
 		translate.y = ofGetViewportHeight() - translate.y;
 		scale.y *= -1;
 		skew.y *= -1;
