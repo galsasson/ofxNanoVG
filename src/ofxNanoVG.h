@@ -253,6 +253,7 @@ public:
 	};
 	
 	NSVGimage* parseSvgFile(const string& filename, const string& units, float dpi);
+	NSVGimage* parseSvg(const string& svg, const string& units, float dpi);
 	void followSvg(NSVGimage* svg, float x=0, float y=0, SvgLineType lineType=SVG_LINEAR);
 	void freeSvg(NSVGimage* svg);
 	

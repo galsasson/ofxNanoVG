@@ -542,6 +542,12 @@ NSVGimage* ofxNanoVG::parseSvgFile(const string& filename, const string& units, 
 	return nsvgParseFromFile(ofToDataPath(filename).c_str(), units.c_str(), dpi);
 }
 
+NSVGimage* ofxNanoVG::parseSvg(const string& svg, const string& units, float dpi)
+{
+	string svgCopy = svg;
+	return nsvgParse(&svgCopy[0], units.c_str(), dpi);
+}
+
 void ofxNanoVG::followSvg(NSVGimage* svg, float x, float y, SvgLineType lineType)
 {
 	if (svg == NULL) {
